@@ -4,38 +4,37 @@ using System.Collections.Generic;
 
 public class PhotonTest : MonoBehaviour, IPhotonPeerListener
 {
-    PhotonPeer peer;
+    //连接服务器
+    private PhotonPeer peer;
+    private ConnectionProtocol protocol = ConnectionProtocol.Udp;
+    private string serverAddress = "127.0.0.1:5055";
+    private string applicationName = "MyGameServer";
 
-    void Start()
+    private bool connected = false;
+
+    void Awake()
     {
-        peer = new PhotonPeer(this, ConnectionProtocol.Udp);
-        peer.Connect("127.0.0.1:5055", "Lite");
+        peer = new PhotonPeer(this, protocol);
     }
 
     void Update()
     {
+        if (!connected)
+            peer.Connect(serverAddress, applicationName);
         peer.Service();
     }
 
-    void SendMessage()
+    private void OnDestroy()
     {
-        Dictionary<byte, object> para = new Dictionary<byte, object>();
-        para[255] = "1";
-        peer.OpCustom(255, para, true);
-
+        if (connected)
+            peer.Disconnect();
     }
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(Screen.width / 2 - 50, 100, 100, 30), "Set Game ID"))
-        {
-            SendMessage();
-        }
-    }
 
     public void DebugReturn(DebugLevel level, string message)
     {
-        Debug.Log(message);
+        if (connected)
+            Debug.Log(message);
     }
 
     public void OnEvent(EventData eventData)
@@ -45,21 +44,22 @@ public class PhotonTest : MonoBehaviour, IPhotonPeerListener
 
     public void OnOperationResponse(OperationResponse operationResponse)
     {
-        Debug.Log("Server Reply You,Mother Fucker : " + operationResponse.ToStringFull());
+        Debug.Log("OnOperationResponse() Fucking Called : " + operationResponse.ToStringFull());
     }
 
     public void OnStatusChanged(StatusCode statusCode)
     {
+        Debug.Log("OnOperationResponse() Fucking Called : " + statusCode.ToString());
         switch (statusCode)
         {
             case StatusCode.Connect:
-                Debug.Log("Connect~~~~ ");
+                connected = true;
                 break;
             case StatusCode.Disconnect:
-                Debug.Log("Disconnect~~~~~");
+                connected = false;
                 break;
             case StatusCode.Exception:
-                Debug.Log("Exception~~~~~");
+                connected = false;
                 break;
         }
     }
