@@ -2,8 +2,16 @@
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
 
-public class PhotonTest : MonoBehaviour, IPhotonPeerListener
+public class PhotonManager : MonoBehaviour, IPhotonPeerListener
 {
+
+    private static PhotonManager instance = null;
+
+    public static PhotonManager Instance
+    {
+        get { return instance; }
+    }
+
     //连接服务器
     private PhotonPeer peer;
     private ConnectionProtocol protocol = ConnectionProtocol.Udp;
@@ -14,6 +22,7 @@ public class PhotonTest : MonoBehaviour, IPhotonPeerListener
 
     void Awake()
     {
+        instance = this;
         peer = new PhotonPeer(this, protocol);
     }
 
@@ -26,10 +35,14 @@ public class PhotonTest : MonoBehaviour, IPhotonPeerListener
 
     private void OnDestroy()
     {
-        if (connected)
-            peer.Disconnect();
+        peer.Disconnect();
     }
 
+    //向服务器发请求
+    public void SendRequest(byte opCode,Dictionary<byte,object> parameters = null)
+    {
+        peer.OpCustom(opCode,parameters,true);
+    }
 
     public void DebugReturn(DebugLevel level, string message)
     {
