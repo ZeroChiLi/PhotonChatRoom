@@ -65,13 +65,13 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //事件响应
     public void OnEvent(EventData eventData)
     {
-        Debug.Log("OnEvent() : " + eventData.ToStringFull());
+        Debug.Log(eventData.ToStringFull());
     }
 
     //服务端发送过来的响应
     public void OnOperationResponse(OperationResponse response)
     {
-        Debug.Log("OnOperationResponse() : " + response.ToStringFull());
+        Debug.Log(response.ToStringFull());
         OpCode code = (OpCode)response.OperationCode;
         byte subCode = (byte)response.Parameters[80];
         switch (code)
@@ -89,7 +89,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //状态改变
     public void OnStatusChanged(StatusCode statusCode)
     {
-        Debug.Log("OnStatusChanged() : " + statusCode.ToString());
+        Debug.Log(statusCode.ToString());
         switch (statusCode)
         {
             case StatusCode.Connect:

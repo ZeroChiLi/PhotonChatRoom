@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using Code.Common;
+using Common.Code;
 
 public class AccountReceiver : MonoBehaviour, IReceiver
 {
@@ -22,6 +23,7 @@ public class AccountReceiver : MonoBehaviour, IReceiver
                 if(response.ReturnCode == 0)
                 {
                     //显示聊天UI
+                    PhotonManager.Instance.OnOperationRequest((byte)OpCode.Chat, new Dictionary<byte, object>(), (byte)ChatCode.Enter);
                 }
                 break;
             default:
