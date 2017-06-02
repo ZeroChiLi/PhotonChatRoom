@@ -31,11 +31,6 @@ public class AccountView : MonoBehaviour
         PhotonManager.Instance.OnOperationRequest((byte)OpCode.Account, parameters,(byte)AccountCode.Login);
     }
 
-    public void ShowRegisterPanel()
-    {
-        registerPanel.SetActive(true);
-    }
-
     public void OnRegisterClick()
     {
         if (string.IsNullOrEmpty(inAccountRegister.text) || string.IsNullOrEmpty(inPasswordRegister.text))
@@ -45,12 +40,22 @@ public class AccountView : MonoBehaviour
         }
 
         AccountDto dto = new AccountDto();
-        dto.Account = inAccountLogin.text;
-        dto.Password = inPasswordLogin.text;
+        dto.Account = inAccountRegister.text;
+        dto.Password = inPasswordRegister.text;
         Dictionary<byte, object> parameters = new Dictionary<byte, object>();
         parameters[0] = JsonUtility.ToJson(dto);
         PhotonManager.Instance.OnOperationRequest((byte)OpCode.Account, parameters, (byte)AccountCode.Register);
 
+    }
+
+    public void OnShowRegisterPanel()
+    {
+        registerPanel.SetActive(true);
+    }
+
+    public void OnHideRegisterPanel()
+    {
+        registerPanel.SetActive(false);
     }
 
 

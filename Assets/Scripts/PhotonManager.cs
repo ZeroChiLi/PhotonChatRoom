@@ -21,13 +21,23 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
 
     private bool connected = false;
 
-    void Awake()
+    //帐号处理
+    public AccountReceiver accountReceiver;
+
+    private void Awake()
     {
         instance = this;
         peer = new PhotonPeer(this, protocol);
+
+        DontDestroyOnLoad(accountReceiver);
     }
 
-    void Update()
+    private void Start()
+    {
+        accountReceiver = FindObjectOfType<AccountReceiver>();
+    }
+
+    private void Update()
     {
         if (!connected)
             peer.Connect(serverAddress, applicationName);
@@ -55,28 +65,37 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //事件响应
     public void OnEvent(EventData eventData)
     {
-        Debug.Log("OnEvent() Called : " + eventData.ToStringFull());
+        Debug.Log("OnEvent() : " + eventData.ToStringFull());
     }
 
     //服务端发送过来的响应
-    public void OnOperationResponse(OperationResponse operationResponse)
+    public void OnOperationResponse(OperationResponse response)
     {
-        Debug.Log("OnOperationResponse() Called : " + operationResponse.ToStringFull());
+        Debug.Log("OnOperationResponse() : " + response.ToStringFull());
+        OpCode code = (OpCode)response.OperationCode;
+        byte subCode = (byte)response.Parameters[80];
+        switch (code)
+        {
+            case OpCode.Account:
+                accountReceiver.OnReceive(subCode, response);
+                break;
+            case OpCode.Chat:
+                break;
+            default:
+                break;
+        }
     }
 
     //状态改变
     public void OnStatusChanged(StatusCode statusCode)
     {
-        Debug.Log("OnOperationResponse() Called : " + statusCode.ToString());
+        Debug.Log("OnStatusChanged() : " + statusCode.ToString());
         switch (statusCode)
         {
             case StatusCode.Connect:
                 connected = true;
                 break;
             case StatusCode.Disconnect:
-                connected = false;
-                break;
-            case StatusCode.Exception:
                 connected = false;
                 break;
         }
