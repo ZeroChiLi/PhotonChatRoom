@@ -5,13 +5,8 @@ using Code.Common;
 
 public class PhotonManager : MonoBehaviour, IPhotonPeerListener
 {
-
     private static PhotonManager instance = null;
-
-    public static PhotonManager Instance
-    {
-        get { return instance; }
-    }
+    public static PhotonManager Instance { get { return instance; } }
 
     //连接服务器
     private PhotonPeer peer;
@@ -24,17 +19,15 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //帐号处理
     public AccountReceiver accountReceiver;
 
+    //聊天信息接收
+    public ChatReceiver chatRceiver;
+
     private void Awake()
     {
         instance = this;
         peer = new PhotonPeer(this, protocol);
 
         DontDestroyOnLoad(accountReceiver);
-    }
-
-    private void Start()
-    {
-        accountReceiver = FindObjectOfType<AccountReceiver>();
     }
 
     private void Update()
@@ -80,6 +73,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
                 accountReceiver.OnReceive(subCode, response);
                 break;
             case OpCode.Chat:
+                chatRceiver.OnReceive(subCode,response); 
                 break;
             default:
                 break;
