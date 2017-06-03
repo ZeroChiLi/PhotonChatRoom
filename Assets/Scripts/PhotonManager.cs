@@ -71,7 +71,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
             case OpCode.Account:
                 accountReceiver.OnReceive(subCode, response);
                 break;
-            case OpCode.Chat:
+            case OpCode.Room:
                 chatRceiver.OnReceive(subCode,response); 
                 break;
             default:

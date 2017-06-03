@@ -18,7 +18,7 @@ public class ChatView : MonoBehaviour
     public void Init(RoomDto room)
     {
         textContent.text = "您已经入聊天室.";
-        foreach (var item in room.accountList)
+        foreach (var item in room.AccountList)
             AddAccount(item);
     }
 
@@ -62,7 +62,7 @@ public class ChatView : MonoBehaviour
             return;
         Dictionary<byte, object> parameters = new Dictionary<byte, object>();
         parameters[0] = inputField.text;
-        PhotonManager.Instance.OnOperationRequest((byte)OpCode.Chat,parameters,(byte)ChatCode.Talk);
+        PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room,parameters,(byte)RoomCode.Talk);
         ClearInputField();              //清除输入框
     }
 }

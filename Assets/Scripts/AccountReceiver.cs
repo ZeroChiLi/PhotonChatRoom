@@ -22,7 +22,7 @@ public class AccountReceiver : MonoBehaviour, IReceiver
                 if (response.ReturnCode == 0)               //返回码正确时
                 {
                     //显示聊天UI
-                    PhotonManager.Instance.OnOperationRequest((byte)OpCode.Chat, new Dictionary<byte, object>(), (byte)ChatCode.Enter);                     
+                    PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room, new Dictionary<byte, object>(), (byte)RoomCode.Enter);                     
                 }
                 break;
             default:
