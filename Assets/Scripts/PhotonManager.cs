@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
-using Code.Common;
+using Common.Code;
 
 public class PhotonManager : MonoBehaviour, IPhotonPeerListener
 {
     private static PhotonManager instance = null;
     public static PhotonManager Instance { get { return instance; } }
 
-    //连接服务器
-    private PhotonPeer peer;
-    private ConnectionProtocol protocol = ConnectionProtocol.Udp;
-    private string serverAddress = "127.0.0.1:5055";
-    private string applicationName = "MyGameServer";
+    private PhotonPeer peer;                                        //连接服务器
+    private ConnectionProtocol protocol = ConnectionProtocol.Udp;   //协议是UDP，这是可靠的UDP
+    private string serverAddress = "127.0.0.1:5055";                //本机IP，5055端口
+    private string applicationName = "MyGameServer";                //服务器应用名称，PhotonServer配置的
 
-    private bool connected = false;
+    private bool connected = false;                                 //是否正在连接
 
-    //帐号处理
-    public AccountReceiver accountReceiver;
+    public AccountReceiver accountReceiver;                         //帐号处理
 
-    //聊天信息接收
-    public ChatReceiver chatRceiver;
+    public ChatReceiver chatRceiver;                                //聊天信息接收            
 
     private void Awake()
     {
@@ -33,8 +30,8 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     private void Update()
     {
         if (!connected)
-            peer.Connect(serverAddress, applicationName);
-        peer.Service();
+            peer.Connect(serverAddress, applicationName);           //连接服务器
+        peer.Service();                                             //获取服务，持续调用才能接受信息
     }
 
     private void OnDestroy()
@@ -45,10 +42,12 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //向服务器发请求
     public void OnOperationRequest(byte opCode, Dictionary<byte, object> parameters = null, byte SubCode = 0)
     {
+        //规定'80'对应的是自操作码
         parameters[80] = SubCode;
         peer.OpCustom(opCode, parameters, true);
     }
 
+    //输出调试信息
     public void DebugReturn(DebugLevel level, string message)
     {
         if (connected)
@@ -65,9 +64,9 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     public void OnOperationResponse(OperationResponse response)
     {
         Debug.Log(response.ToStringFull());
-        OpCode code = (OpCode)response.OperationCode;
         byte subCode = (byte)response.Parameters[80];
-        switch (code)
+
+        switch ((OpCode)response.OperationCode)         //判断发过来操作码
         {
             case OpCode.Account:
                 accountReceiver.OnReceive(subCode, response);
@@ -80,7 +79,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
         }
     }
 
-    //状态改变
+    //状态改变时调用
     public void OnStatusChanged(StatusCode statusCode)
     {
         Debug.Log(statusCode.ToString());

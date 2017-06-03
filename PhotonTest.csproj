@@ -86,6 +86,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\AccountReceiver.cs" />
     <Compile Include="Assets\Scripts\AccountView.cs" />
+    <Compile Include="Assets\Scripts\ChatReceiver.cs" />
+    <Compile Include="Assets\Scripts\ChatView.cs" />
     <Compile Include="Assets\Scripts\IReceiver.cs" />
     <Compile Include="Assets\Scripts\PhotonManager.cs" />
   </ItemGroup>
