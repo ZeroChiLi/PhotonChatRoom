@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using ExitGames.Client.Photon;
 using Common.Code;
 using Common.Dto;
@@ -26,7 +27,9 @@ public class ChatReceiver : MonoBehaviour ,IReceiver
                 }
                 break;
             case RoomCode.Add:                      //房间有新用户处理
-                chatView.AddAccount(GetResponseFromJson<AccountDto>(response));
+                var account = GetResponseFromJson<AccountDto>(response);
+                if (chatView.AddAccount(account))
+                    chatView.ShowNewAccountTip(account.AccountName);
                 break;
             case RoomCode.Talk:                     //房间有人说话处理
                 string text = response.Parameters[0].ToString();
@@ -41,9 +44,9 @@ public class ChatReceiver : MonoBehaviour ,IReceiver
     }
 
     //从获取到的信息中提取出Dto
-    private T GetResponseFromJson<T>(OperationResponse response)
+    private Dto GetResponseFromJson<Dto>(OperationResponse response)
     {
-        return JsonUtility.FromJson<T>(response.Parameters[0].ToString());
+        return JsonUtility.FromJson<Dto>(response.Parameters[0].ToString());
     } 
 
 }

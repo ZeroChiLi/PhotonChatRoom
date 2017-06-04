@@ -15,7 +15,7 @@ public class AccountReceiver : MonoBehaviour, IReceiver
             case AccountCode.Register:
                 if (response.ReturnCode == 0)               //返回码正确时
                 {
-                    accountView.OnHideRegisterPanel();      //关闭注册面板。
+                    //accountView.OnHideRegisterPanel();      //关闭注册面板。
                 }
                 break;
             case AccountCode.Login:

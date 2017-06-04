@@ -2,6 +2,7 @@
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
 using Common.Code;
+using UnityEngine.UI;
 
 public class PhotonManager : MonoBehaviour, IPhotonPeerListener
 {
@@ -16,8 +17,9 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     private bool connected = false;                                 //是否正在连接
 
     public AccountReceiver accountReceiver;                         //帐号处理
+    public ChatReceiver chatRceiver;                                //聊天信息接收      
 
-    public ChatReceiver chatRceiver;                                //聊天信息接收            
+    public Text tipText;      
 
     private void Awake()
     {
@@ -42,7 +44,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     //向服务器发请求
     public void OnOperationRequest(byte opCode, Dictionary<byte, object> parameters = null, byte SubCode = 0)
     {
-        //规定'80'对应的是自操作码
+        //规定'80'对应的是子操作码
         parameters[80] = SubCode;
         peer.OpCustom(opCode, parameters, true);
     }
@@ -64,6 +66,7 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
     public void OnOperationResponse(OperationResponse response)
     {
         Debug.Log(response.ToStringFull());
+        tipText.text = response.DebugMessage;
         byte subCode = (byte)response.Parameters[80];
 
         switch ((OpCode)response.OperationCode)         //判断发过来操作码
@@ -87,9 +90,13 @@ public class PhotonManager : MonoBehaviour, IPhotonPeerListener
         {
             case StatusCode.Connect:
                 connected = true;
+                if(tipText != null)
+                    tipText.text = "连接服务器成功。";
                 break;
             case StatusCode.Disconnect:
                 connected = false;
+                if (tipText != null)
+                    tipText.text = "断开服务器连接。";
                 break;
         }
     }

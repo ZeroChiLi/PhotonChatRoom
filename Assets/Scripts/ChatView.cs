@@ -17,20 +17,27 @@ public class ChatView : MonoBehaviour
 
     public void Init(RoomDto room)
     {
-        textContent.text = "您已经入聊天室.";
+        textContent.text = "";
         foreach (var item in room.AccountList)
             AddAccount(item);
     }
 
     //添加用户
-    public void AddAccount(AccountDto accountDto)
+    public bool AddAccount(AccountDto accountDto)
     {
         if (dtoObjDict.ContainsKey(accountDto.AccountName))
-            return;
+            return false;
         GameObject accountItem = Instantiate(accountTestPerfab);
         accountItem.GetComponent<Text>().text = accountDto.AccountName;
         accountItem.transform.SetParent(accountParent);             //添加到列表
-        dtoObjDict.Add(accountDto.AccountName, accountItem);        
+        dtoObjDict.Add(accountDto.AccountName, accountItem);
+        return true;
+    }
+
+    //新用户提示
+    public void ShowNewAccountTip(string accountName)
+    {
+        textContent.text += string.Format("\n----用户“ {0} ”进入聊天室----", accountName);
     }
 
     //用户离开

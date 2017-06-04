@@ -13,6 +13,8 @@ public class AccountView : MonoBehaviour
     public InputField registerAccountInput;
     public InputField registerPasswordInput;
 
+    public Text tipText;
+
     //注册面板
     public GameObject registerPanel;
 
@@ -22,6 +24,7 @@ public class AccountView : MonoBehaviour
         if (string.IsNullOrEmpty(loginAccountInput.text) || string.IsNullOrEmpty(loginPasswordInput.text))
         {
             Debug.Log("用户或密码不能为空。");
+            tipText.text = "用户或密码不能为空。";
             return;
         }
         SendAccountRequest(loginAccountInput.text, loginPasswordInput.text, (byte)AccountCode.Login);
@@ -32,7 +35,8 @@ public class AccountView : MonoBehaviour
     {
         if (string.IsNullOrEmpty(registerAccountInput.text) || string.IsNullOrEmpty(registerPasswordInput.text))
         {
-            Debug.Log("输入不能为空。");
+            Debug.Log("用户或密码不能为空。");
+            tipText.text = "用户或密码不能为空。";
             return;
         }
         SendAccountRequest(registerAccountInput.text, registerPasswordInput.text, (byte)AccountCode.Register);
