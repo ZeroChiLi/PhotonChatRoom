@@ -21,7 +21,7 @@ public class AccountReceiver : MonoBehaviour, IReceiver
             case AccountCode.Login:
                 if (response.ReturnCode == 0)               //返回码正确时
                 {
-                    //显示聊天UI
+                    //告诉服务器我可以进入了
                     PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room, new Dictionary<byte, object>(), (byte)RoomCode.Enter);                     
                 }
                 break;

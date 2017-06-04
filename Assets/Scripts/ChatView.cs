@@ -7,6 +7,9 @@ using Common.Dto;
 //聊天房间信息详细处理
 public class ChatView : MonoBehaviour
 {
+    public GameObject loginCanvas;      //登录面板
+    public GameObject chatCanvas;       //聊天面板
+
     public Text textContent;
     public InputField inputField;
 
@@ -14,9 +17,13 @@ public class ChatView : MonoBehaviour
     public GameObject accountTestPerfab;        //用户名字预设
 
     private Dictionary<string, GameObject> dtoObjDict = new Dictionary<string, GameObject>();
+    private Dictionary<byte, object> parameters = new Dictionary<byte, object>();
 
     public void Init(RoomDto room)
     {
+        loginCanvas.SetActive(false);   //隐藏登录面板
+        chatCanvas.SetActive(true);     //显示聊天面板
+
         textContent.text = "";
         foreach (var item in room.AccountList)
             AddAccount(item);
@@ -40,12 +47,13 @@ public class ChatView : MonoBehaviour
         textContent.text += string.Format("\n----用户“ {0} ”进入聊天室----", accountName);
     }
 
-    //用户离开
-    public void LeaveRoom(AccountDto accountDto)
+    //别的用户离开
+    public void SomeOneLeave(AccountDto accountDto)
     {
         if (!dtoObjDict.ContainsKey(accountDto.AccountName))
             return;
 
+        textContent.text += string.Format("\n----用户“ {0} ”离开聊天室----", accountDto.AccountName);
         Destroy(dtoObjDict[accountDto.AccountName]);                //先Destroy
         dtoObjDict.Remove(accountDto.AccountName);                  //再移出字典
     }
@@ -67,9 +75,16 @@ public class ChatView : MonoBehaviour
     {
         if (string.IsNullOrEmpty(inputField.text))
             return;
-        Dictionary<byte, object> parameters = new Dictionary<byte, object>();
         parameters[0] = inputField.text;
         PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room,parameters,(byte)RoomCode.Talk);
         ClearInputField();              //清除输入框
+    }
+
+    //退出聊天室
+    public void OnReturn()
+    {
+        chatCanvas.SetActive(false);
+        loginCanvas.SetActive(true);
+        PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room, parameters, (byte)RoomCode.Leave);
     }
 }

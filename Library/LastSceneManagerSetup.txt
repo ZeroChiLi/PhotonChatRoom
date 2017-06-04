@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/PhotonTest.unity
+- path: Assets/PhotonChatRoom.unity
   isLoaded: 1
   isActive: 1
