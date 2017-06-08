@@ -83,8 +83,11 @@ public class ChatView : MonoBehaviour
     //退出聊天室
     public void OnReturn()
     {
+        Destroy(dtoObjDict[PhotonManager.Instance.MasterName]);                //先Destroy
+        dtoObjDict.Remove(PhotonManager.Instance.MasterName);                  //再移出字典
         chatCanvas.SetActive(false);
         loginCanvas.SetActive(true);
         PhotonManager.Instance.OnOperationRequest((byte)OpCode.Room, parameters, (byte)RoomCode.Leave);
     }
+
 }

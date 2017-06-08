@@ -28,6 +28,7 @@ public class AccountView : MonoBehaviour
             return;
         }
         SendAccountRequest(loginAccountInput.text, loginPasswordInput.text, (byte)AccountCode.Login);
+        PhotonManager.Instance.MasterName = loginAccountInput.text;
     }
 
     //注册请求响应
