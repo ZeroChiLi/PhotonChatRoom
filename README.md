@@ -1,4 +1,4 @@
-# PhotonTest
+# PhotonChatRoom
 Photon Server Study
 
 介绍见：
